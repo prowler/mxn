@@ -48,6 +48,9 @@ Mapstraction: {
 		Microsoft.Maps.Events.addHandler(this.maps[api], 'viewchangeend', function(event){
 			me.endPan.fire();
 		});
+		Microsoft.Maps.Events.addHandler(this.maps[api], 'viewchange', function(event){
+			me.endPan.fire();
+		});
 	},
 	
 	applyOptions: function(){
