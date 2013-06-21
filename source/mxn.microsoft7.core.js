@@ -4,8 +4,8 @@ Mapstraction: {
 	init: function(element, api) {
 		var me = this;
 		
-		if (!Microsoft || !Microsoft.Maps) {
-			throw api + ' map script not imported';
+		if (!Microsoft || !Microsoft.Maps || !Microsoft.Maps.Map) {
+			throw api + ' map script not imported or not loaded';
 		}
 		this.maps[api] = new Microsoft.Maps.Map(element, { credentials: microsoft_key } );
 		//Add Click Event
