@@ -114,7 +114,6 @@ Mapstraction: {
 		
 		map.entities.push(pin);
 		
-		
 		return pin;
 	},
 
@@ -150,7 +149,7 @@ Mapstraction: {
 	
 	getCenter: function() {
 		var map = this.maps[this.api];
-		var center = map.getCenter();
+		var center = map.getTargetCenter();
 		
 		return new mxn.LatLonPoint(center.latitude, center.longitude);
 	},
@@ -177,13 +176,7 @@ Mapstraction: {
 	
 	getZoom: function() {
 		var map = this.maps[this.api];
-		var zoom;
-		
-		var options = map.getOptions();
-		zoom = options.zoom;
-		// TODO: Add provider code
-		
-		return zoom;
+		return map.getTargetZoom();
 	},
 
 	getZoomLevelForBoundingBox: function( bbox ) {
@@ -233,28 +226,25 @@ Mapstraction: {
 			default:
 				return mxn.Mapstraction.ROAD;
 		}
-
 	},
 
 	getBounds: function () {
 		var map = this.maps[this.api];
-		var options = map.getOptions();
-		// TODO: Add provider code
-		var nw = options.bounds.getNorthwest;
-		var se = options.bounds.getSoutheast;
-		return new mxn.BoundingBox(se.latitude,nw.longitude	,nw.latitude	, se.longitude );
+		var bounds = map.getTargetBounds();
+		var nw = bounds.getNorthwest();
+		var se = bounds.getSoutheast();
+    return new mxn.BoundingBox(nw.latitude, se.longitude, se.latitude, nw.longitude);
 	},
 
 	setBounds: function(bounds){
 		var map = this.maps[this.api];
 		var sw = bounds.getSouthWest();
 		var ne = bounds.getNorthEast();
-		var viewRect = Microsoft.Maps.LocationRect.fromCorners(new Microsoft.Maps.Location(sw.lat,ne.lon), new Microsoft.Maps.Location(ne.at,sw.lon));
+		var viewRect = Microsoft.Maps.LocationRect.fromCorners(new Microsoft.Maps.Location(ne.lat,sw.lon), new Microsoft.Maps.Location(sw.lat,ne.lon));
 		var options = map.getOptions();
 		options.bounds = viewRect;
 		options.center = null;
 		map.setView(options);
-		
 	},
 
 	addImageOverlay: function(id, src, opacity, west, south, east, north, oContext) {
@@ -348,7 +338,7 @@ Marker: {
 		}
 		var mmarker = new Microsoft.Maps.Pushpin(this.location.toProprietary('microsoft7'), options); 
 
-		if (this.infoBubble){
+		if(this.infoBubble || this.infoBubbleHtml) {
 			var event_action = "click";
 			if (this.hover) {
 				event_action = "mouseover";
@@ -362,17 +352,29 @@ Marker: {
 		}
 		return mmarker;
 	},
-
-	openBubble: function() {		
-		var infowindow = new Microsoft.Maps.InfoBox({
-			description: this.infoBubble
-		});
-		
-		this.events.openInfoBubble.fire({'marker': this});
+  
+	openBubble: function() {
+    if(!this.hasOwnProperty('proprietary_infowindow') || this.proprietary_infowindow === null) {
+  		var infowindow = new Microsoft.Maps.Infobox(this.location.toProprietary(this.api), {
+  			description: this.infoBubble,
+        htmlContent: this.infoBubbleHtml
+  		});
+    }
+    else {
+      infowindow = this.proprietary_infowindow;
+    }
+    
+    // consistent behaviour between map providers, so one InfoWindow open at a time
+    for(i=0; i<this.mapstraction.markers.length; i++) {
+      this.mapstraction.markers[i].closeBubble();
+    }
+    
 		this.map.entities.push(infowindow);
-		infowindow.setOptions({visible: true});
+    infowindow.setOptions({visible: true});
+    this.openInfoBubble.fire({'marker': this});
 		this.proprietary_infowindow = infowindow; // Save so we can close it later
 	},
+  
 	closeBubble: function() {
 		if (!this.map) {
 			throw 'Marker must be added to map in order to display infobox';
@@ -383,6 +385,7 @@ Marker: {
 		this.proprietary_infowindow.setOptions({visible:false});
 		this.map.entities.remove(this.proprietary_infowindow);
 	},
+  
 	hide: function() {
 		this.proprietary_marker.setOptions({visible: false});
 	},

@@ -1359,13 +1359,13 @@ BoundingBox.prototype.extend = function(point) {
 		this.sw.lat = point.lat;
 	}
 	if (this.sw.lon > point.lon) {
-		this.sw.lon = point.lon;
+		this.sw.lon = this.sw.lng = point.lon;
 	}
 	if (this.ne.lat < point.lat) {
 		this.ne.lat = point.lat;
 	}
 	if (this.ne.lon < point.lon) {
-		this.ne.lon = point.lon;
+		this.ne.lon = this.ne.lng = point.lon;
 	}
 	return;
 };
@@ -1476,6 +1476,9 @@ Marker.prototype.addData = function(options){
 				case 'infoBubble':
 					this.setInfoBubble(options.infoBubble);
 					break;
+				case 'infoBubbleHtml':
+					this.setInfoBubbleHtml(options.infoBubbleHtml);
+					break;
 				case 'icon':
 					if(options.iconSize && options.iconAnchor) {
 						this.setIcon(options.icon, options.iconSize, options.iconAnchor);
@@ -1527,11 +1530,19 @@ Marker.prototype.addData = function(options){
 };
 
 /**
- * Sets the html/text content for a bubble popup for a marker
- * @param {String} infoBubble the html/text you want displayed
+ * Sets the text content for a bubble popup for a marker
+ * @param {String} infoBubble the text you want displayed
  */
 Marker.prototype.setInfoBubble = function(infoBubble) {
 	this.infoBubble = infoBubble;
+};
+
+/**
+ * Sets the html content for a bubble popup for a marker
+ * @param {String} infoBubble the HTML you want displayed
+ */
+Marker.prototype.setInfoBubbleHtml = function(html) {
+  this.infoBubbleHtml = html;
 };
 
 /**
