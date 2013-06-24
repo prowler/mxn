@@ -35,6 +35,11 @@
 			case 'microsoft':
 				document.write('<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3&mkt=en-us"><\/script>');
 				break;
+			case 'microsoft7':
+        // key is Basic/Education
+        window.microsoft_key = 'AlFklhOOi8ap9GyWDotVD_vJDnD4SBtvvgsbaSd4viI3YjsZRr8zTmfHDg9y_nZH';
+				document.write('<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"><\/script>');
+				break;
 			case 'geocommons':
 				document.write('<script type="text/javascript" src="http://geocommons.com/javascripts/f1.api.js"><\/script>');
 				break;
@@ -96,7 +101,8 @@
 		m.polylineRemoved.addHandler(function(sEvtName, oEvtSource, oEvtArgs){
 			eventsElm.innerHTML += 'Polyline removed.<br/>';
 		});
-			m.click.addHandler(function(sEvtName, oEvtSource, oEvtArgs){
+    
+		m.click.addHandler(function(sEvtName, oEvtSource, oEvtArgs){
 			eventsElm.innerHTML += 'Map clicked: ' + Dump(oEvtArgs.location) + '<br/>';
 		});
 		
@@ -293,6 +299,7 @@
 			<a href="?provider=openlayers">openlayers</a>,
 			<a href="?provider=yahoo">yahoo</a>
 			<a href="?provider=microsoft">microsoft</a>
+			<a href="?provider=microsoft7">microsoft7</a>
 		</p>
 		</div>
 </body>
