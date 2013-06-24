@@ -48,9 +48,6 @@ Mapstraction: {
 		Microsoft.Maps.Events.addHandler(this.maps[api], 'viewchangeend', function(event){
 			me.endPan.fire();
 		});
-		Microsoft.Maps.Events.addHandler(this.maps[api], 'viewchange', function(event){
-			me.endPan.fire();
-		});
 	},
 	
 	applyOptions: function(){
@@ -306,7 +303,14 @@ LatLonPoint: {
 	fromProprietary: function(mPoint) {
 		this.lat = mPoint.latitude;
 		this.lon = mPoint.longitude;
-	}
+	},
+  
+  toPixels: function(map) {
+    var sinLatitude = Math.sin(this.lat * Math.PI/180);
+    var pixelX = ((this.lon + 180) / 360) * 256 * Math.pow(2, map.getZoom());
+    var pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * 256 * Math.pow(2, map.getZoom());
+    return {x: pixelX, y: pixelY};
+  }
 	
 },
 

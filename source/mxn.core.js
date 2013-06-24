@@ -1225,7 +1225,17 @@ mxn.addProxyMethods(LatLonPoint, [
 	 * @param {String} apiId The API ID of the proprietary point.
 	 * @returns A proprietary point.
 	 */
-	'toProprietary'
+	'toProprietary',
+  
+	/**
+	 * Converts the current LatLonPoint coordinates to pixel coordinates on the map div container
+	 * @name mxn.LatLonPoint#toPixels
+	 * @function
+	 * @param {String} apiId The API ID of the proprietary point.
+	 * @param {Object} map that the point is on.
+	 * @returns {x, y}
+	 */
+  'toPixels'
 ], true);
 
 /**
