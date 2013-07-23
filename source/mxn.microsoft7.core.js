@@ -8,8 +8,16 @@ Mapstraction: {
 			throw api + ' map script not imported or not loaded';
 		}
 		this.maps[api] = new Microsoft.Maps.Map(element, { credentials: microsoft_key } );
-		//Add Click Event
-		element.addEventListener('contextmenu', function(evt) { evt.preventDefault(); });
+    // Add Click Event
+    if(element.addEventListener) {
+      element.addEventListener('contextmenu', function(evt) { evt.preventDefault(); });
+    }
+    else if(element.attachEvent) {
+      element.attachEvent('oncontextmenu', function(evt) {
+        evt.cancelBubble = true;
+        evt.returnValue = false;
+      });
+    }
 		Microsoft.Maps.Events.addHandler(this.maps[api], 'rightclick', function(event) {
 			var map = me.maps[me.api];
 			var _x = event.getX();
